@@ -7,11 +7,41 @@ import {
   Wallet,
 } from 'lucide-react'
 
-import type { InsightData } from '@/services/aiService'
-
 import type { FormStepProps } from '../components/features/Simulation/FormStep'
 
 export const simulationFormSteps = [
+  {
+    id: 'name',
+    icon: PiggyBank,
+    title: 'Bem-vindo!',
+    question: 'Como você gostaria de ser chamado(a)?',
+    inputProps: {
+      placeholder: 'Digite seu nome',
+      maxLength: 30,
+    },
+  },
+  {
+    id: 'initialBalance',
+    icon: Wallet,
+    title: 'Saldo atual',
+    question: 'Quanto você possui atualmente em conta?',
+    inputProps: {
+      placeholder: 'ex: 3.200,00',
+      prefix: 'R$',
+      maxLength: 12,
+    },
+  },
+  {
+    id: 'initialGoalAmount',
+    icon: Goal,
+    title: 'Reserva financeira',
+    question: 'Quanto você deseja acumular na sua reserva de emergência?',
+    inputProps: {
+      placeholder: 'ex: 15.000,00',
+      prefix: 'R$',
+      maxLength: 12,
+    },
+  },
   {
     id: 'income',
     icon: PiggyBank,
@@ -88,12 +118,32 @@ export const simulationFormSteps = [
   },
 ] satisfies FormStepProps[]
 
-export type SimulationFormData = Record<
-  (typeof simulationFormSteps)[number]['id'],
-  string
->
+export type SimulationFormData = {
+  user: {
+    name: string
+    initialBalance: string
+    initialGoalAmount: string
+  }
+  income: string
+  expenses: string
+  debts: string
+  goalName: string
+  goalAmount: string
+  goalDeadline: string
+}
 
-export type SimulationRecord = SimulationFormData & {
+export type SimulationRecord = {
   id: string
-  insight?: InsightData
+  createdAt: string
+  user: {
+    name: string
+    initialBalance: string
+    initialGoalAmount: string
+  }
+  income: string
+  expenses: string
+  debts: string
+  goalName: string
+  goalAmount: string
+  goalDeadline: string
 }

@@ -1,9 +1,9 @@
-import { ArrowLeft, ArrowRight, type LucideIcon } from 'lucide-react';
-import { type SyntheticEvent, useState } from 'react';
+import { ArrowLeft, ArrowRight, type LucideIcon } from 'lucide-react'
+import { type SyntheticEvent, useEffect, useState } from 'react'
 
-import { Button } from "@/components/shared/Button/button";
-import { Input, type InputProps } from "@/components/shared/Input/Input";
-import { formatCurrencyMask } from '@/utils/currency';
+import { Button } from "@/components/shared/Button/button"
+import { Input, type InputProps } from "@/components/shared/Input/Input"
+import { formatCurrencyMask } from '@/utils/currency'
 
 export interface FormStepProps {
   id: string
@@ -24,6 +24,7 @@ interface ActionsButtonsProps {
 }
 
 export function FormStep({
+  id,
   icon: Icon,
   title,
   question,
@@ -35,28 +36,35 @@ export function FormStep({
 }: FormStepProps & ActionsButtonsProps) {
   const [inputValue, setInputValue] = useState('')
 
+  useEffect(() => {
+    setInputValue('')
+  }, [id])
+
   const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (!inputValue) {
-      return
-    }
+    if (!inputValue) return
 
     onNext(inputValue)
   }
 
   return (
     <div className="bg-card rounded-2xl p-6 shadow-[4px_4px_18px_0px_rgba(0,0,0,0.2)] sm:p-8">
+
       <div className="bg-primary mb-4 flex h-15 w-15 items-center justify-center rounded-xl">
         <Icon size={32} className="text-primary-foreground" />
       </div>
+
       <h2 className="text-primary mb-1 text-xs font-semibold tracking-widest uppercase">
         {title}
       </h2>
+
       <h3 className="text-foreground mb-6 text-xl leading-snug font-semibold sm:text-2xl">
         {question}
       </h3>
+
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+
         <Input
           {...inputProps}
           value={inputValue}
@@ -68,7 +76,9 @@ export function FormStep({
             )
           }
         />
+
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-6">
+
           {!hideBackButton && (
             <Button
               type="button"
@@ -80,6 +90,7 @@ export function FormStep({
               Voltar
             </Button>
           )}
+
           <Button
             type="submit"
             variant="primary"
@@ -90,6 +101,7 @@ export function FormStep({
             {submitButtonProps?.label ?? 'Próximo'}
             {submitButtonProps?.emojiIcon}
           </Button>
+
         </div>
       </form>
     </div>

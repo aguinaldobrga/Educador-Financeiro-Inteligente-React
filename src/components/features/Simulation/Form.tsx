@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
 
 import { type SimulationFormData, simulationFormSteps } from '@/data/simulation';
 import { useSimulationStorage } from '@/hooks/useSimulationStorage';
@@ -10,23 +11,65 @@ import { StepProgress } from './Progress'
 export const SimulationForm = () => {
   const { saveFormData } = useSimulationStorage()
   const navigate = useNavigate()
+ 
 
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
-  const [formData, setFormData] = useState<SimulationFormData>(
-    {} as SimulationFormData,
-  )
+  const [formData, setFormData] = useState<SimulationFormData>({
+    user: {
+      name: '',
+      initialBalance: '',
+      initialGoalAmount: '',
+    },
+    income: '',
+    expenses: '',
+    debts: '',
+    goalName: '',
+    goalAmount: '',
+    goalDeadline: '',
+  })
   const totalSteps = simulationFormSteps.length
   const currentStep = simulationFormSteps[currentStepIndex]
 
   const handleNextStep = (value: string) => {
-    const updatedFormData = { ...formData, [currentStep.id]: value }
+    const stepId = currentStep.id
+
+    let updatedFormData = { ...formData }
+
+    if (
+      stepId === 'name' ||
+      stepId === 'initialBalance' ||
+      stepId === 'initialGoalAmount'
+    ) {
+      updatedFormData = {
+        ...formData,
+        user: {
+          ...formData.user,
+          [stepId === 'name'
+            ? 'name'
+            : stepId === 'initialBalance'
+            ? 'initialBalance'
+            : 'initialGoalAmount']: value,
+        },
+      }
+    } else {
+      updatedFormData = {
+        ...formData,
+        [stepId]: value,
+      }
+    }
+
     setFormData(updatedFormData)
 
-    console.log({ updatedFormData })
-
     if (currentStepIndex + 1 > totalSteps - 1) {
-      const id = saveFormData(updatedFormData)
-      void navigate(`/resultado/${id}`)
+      const newSimulation = {
+        id: uuidv4(),
+        createdAt: new Date().toISOString(),
+        ...updatedFormData,
+      }
+
+      saveFormData(newSimulation)
+
+      void navigate(`/resultado/${newSimulation.id}`)
       return
     }
 

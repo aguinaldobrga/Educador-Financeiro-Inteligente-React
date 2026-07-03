@@ -13,6 +13,7 @@ import { Card } from '@/components/features/SimulationResults/Card';
 import { PageHero } from '@/components/shared/PageHero/PageHero';
 import { useSimulationStorage } from '@/hooks/useSimulationStorage';
 import { calcMonthlySavings } from '@/utils/simulation';
+import { ChatView } from '@/components/features/Simulation/ChatView';
 
 export function SimulationResultsPage() {
   const { id } = useParams<{ id: string }>()
@@ -76,6 +77,9 @@ export function SimulationResultsPage() {
           />
         </div>
       </div>
+      <div className="mt-10">
+        <ChatView userName={data.user.name} transactions={[]} goals={[]} />
+      </div>   
     </main>
   )
 }
